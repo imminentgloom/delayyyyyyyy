@@ -4,7 +4,7 @@
 --
 -- ENC1 length
 -- ENC2 feedback
--- ENC3 separation
+-- ENC3 modulation
 
 engine.name = "Delayyyyyyyy"
 
@@ -14,17 +14,17 @@ function init()
   params:add_separator()
   
   engine.length(0.1)
-  engine.fb(0.5)
-  engine.sep(0.12)
+  engine.feedback(0.5)
+  engine.modulation(0.01)
   
-  params:add_control("length", "length", controlspec.new(0.01, 2, 'lin', 0.01, 0.1, 's'))
+  params:add_control("length", "length", controlspec.new(0.01, 1.2, 'lin', 0.01, 0.1, 's'))
   params:set_action("length", function(x) engine.length(x) end)
   
   params:add_control("fb", "feedback", controlspec.new(0, 1, 'lin', 0.01, 0.5, ''))
-  params:set_action("fb", function(x) engine.fb(x) end)
+  params:set_action("fb", function(x) engine.feedback(x) end)
   
-  params:add_control("sep", "separation", controlspec.new(0, 1, 'lin', 0.01, 0.12, 's'))
-  params:set_action("sep", function(x) engine.sep(x) end)
+  params:add_control("mod", "modulation", controlspec.new(0, 1, 'lin', 0.01, 0.01, ''))
+  params:set_action("mod", function(x) engine.modulation(x) end)
 end
 
 function enc(n, d)
@@ -33,7 +33,7 @@ function enc(n, d)
   elseif n == 2 then
     params:delta("fb", d)
   elseif n == 3 then
-    params:delta("sep", d)
+    params:delta("mod", d)
   end
   
   redraw()
@@ -77,9 +77,9 @@ function redraw()
   screen.text(params:get("fb"))
   screen.move(0, 50)
   screen.level(15)
-  screen.text("separation: ")
+  screen.text("modulation: ")
   screen.level(3)
-  screen.text(params:get("sep"))
+  screen.text(params:get("mod"))
   
   screen.update()
 end
