@@ -7,17 +7,15 @@
 -- ENC3 modulation
 
 engine.name = "Delayyyyyyyy"
+initial_monitor_level = 0
 
 function init()
-  print("delayyyyyyyyyyyyyyyyyyyyyy")
+  initial_monitor_level = params:get("monitor_level")
+  params:set("monitor_level", -math.huge)
   
   params:add_separator()
   
-  engine.length(0.2)
-  engine.feedback(0.5)
-  engine.modulation(0)
-  
-  params:add_control("length", "length", controlspec.new(0.01, 2, 'lin', 0.01, 0.1, 's'))
+  params:add_control("length", "length", controlspec.new(0.01, 2, 'lin', 0.01, 0.2, 's'))
   params:set_action("length", function(x)
     engine.length(x)
   end)
@@ -31,6 +29,32 @@ function init()
   params:set_action("mod", function(x)
     engine.modulation(x / 100)
   end)
+  
+  params:add_control("wet", "wet", controlspec.new(0, 1, 'lin', 0.01, 0.5, ''))
+  params:set_action("wet", function(x)
+    engine.wet((x * 2) - 1)
+  end)
+  
+  params:add_control("inputs", "input channels", controlspec.new(1, 2, 'lin', 1, 1, ''))
+  params:set_action("inputs", function(x)
+    if x == 2 then
+      engine.inL(0)
+      engine.inR(1)
+    else
+      engine.inL(0)
+      engine.inR(0)
+    end
+  end)
+  
+  params:set("length", 0.2)
+  params:set("fb", 0.2)
+  params:set("mod", 0.0)
+  params:set("wet", 0.5)
+  params:set("inputs", 1)
+end
+
+function cleanup()
+  params:set("monitor_level", initial_monitor_level)
 end
 
 function enc(n, d)
@@ -47,7 +71,12 @@ end
 
 function redraw()
   screen.clear()
-  
+  draw_logo()
+  draw_params()
+  screen.update()
+end
+
+function draw_logo()
   screen.font_face(2)
   screen.font_size(18)
   screen.level(15)
@@ -69,7 +98,9 @@ function redraw()
   screen.text("y")
   screen.level(0)
   screen.text("y")
-  
+end
+
+function draw_params()
   screen.font_size(8)
   screen.move(0, 30)
   screen.level(15)
@@ -86,6 +117,4 @@ function redraw()
   screen.text("modulation: ")
   screen.level(3)
   screen.text(params:get("mod"))
-  
-  screen.update()
 end

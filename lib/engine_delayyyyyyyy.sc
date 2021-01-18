@@ -11,32 +11,40 @@ Engine_Delayyyyyyyy : CroneEngine {
 
 	alloc {
 		synth = {
-			arg inL, inR, out, length = 1, feedback = 0.8, modulation = 0.012;
+			arg inL, inR, out, length, feedback, modulation, wet;
 			
 			var l = Lag.kr(length, 0.2);
 			var f = Lag.kr(feedback, 0.2);
 			var m = Lag.kr(modulation, 0.2);
 			
-	    var input = [In.ar(inL), In.ar(inR)];
+	    var input = SoundIn.ar([inL, inR]);
 	    var fb = LocalIn.ar(2);
 	    var output = LeakDC.ar(fb*f + input);
 	    output = HPF.ar(output, 400);
 	    output = LPF.ar(output, 5000);
 	    output = output.tanh;
-
-      // Note: .reverse causes the ping pong.
-      // Could be nice to enable / disable?
-	    LocalOut.ar(DelayC.ar(output, 2.5, LFNoise2.ar(12).range([l,l+m],[l+m,l])).reverse);
 	    
-			Out.ar(out, output);
+	    output = DelayC.ar(output, 2.5, LFNoise2.ar(12).range([l,l+m],[l+m,l])).reverse;
+	    LocalOut.ar(output);
+	    
+			Out.ar(out, LinXFade2.ar(input, output, wet));
 		}.play(args: [
-		  \inL, context.in_b[0].index,			
-			\inR, context.in_b[1].index,
+		  \inL, 0,
+			\inR, 1,
 		  \out, context.out_b,
 		  \length, 0.2,
 		  \feedback, 0.5,
-		  \modulation, 0.0
+		  \modulation, 0.0,
+		  \wet, 0.0
 		], target: context.xg);
+		
+		this.addCommand("inL", "i", { arg msg;
+			synth.set(\inL, msg[1]);
+		});
+		
+		this.addCommand("inR", "i", { arg msg;
+			synth.set(\inR, msg[1]);
+		});
 
 		this.addCommand("length", "f", { arg msg;
 			synth.set(\length, msg[1]);
@@ -48,6 +56,10 @@ Engine_Delayyyyyyyy : CroneEngine {
 		
 		this.addCommand("modulation", "f", { arg msg;
 			synth.set(\modulation, msg[1]);
+		});
+		
+		this.addCommand("wet", "f", { arg msg;
+			synth.set(\wet, msg[1]);
 		});
 	}
 
