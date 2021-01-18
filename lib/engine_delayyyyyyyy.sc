@@ -26,7 +26,7 @@ Engine_Delayyyyyyyy : CroneEngine {
 
       // Note: .reverse causes the ping pong.
       // Could be nice to enable / disable?
-	    LocalOut.ar(DelayC.ar(output, 1, LFNoise2.ar(12).range([l,l+m],[l+m,l])).reverse);
+	    LocalOut.ar(DelayC.ar(output, 2.5, LFNoise2.ar(12).range([l,l+m],[l+m,l])).reverse);
 	    
 			Out.ar(out, output);
 		}.play(args: [
@@ -34,8 +34,8 @@ Engine_Delayyyyyyyy : CroneEngine {
 			\inR, context.in_b[1].index,
 		  \out, context.out_b,
 		  \length, 0.2,
-		  \feedback, 0.8,
-		  \modulation, 0.012
+		  \feedback, 0.5,
+		  \modulation, 0.0
 		], target: context.xg);
 
 		this.addCommand("length", "f", { arg msg;
