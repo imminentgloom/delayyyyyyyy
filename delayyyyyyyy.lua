@@ -29,10 +29,10 @@ function setup_params()
   params:add_control("time", "time", controlspec.new(0.01, 2, 'lin', 0.01, 0.01, 's'))
   params:set_action("time", function(x) engine.time(x) end)
   
-  params:add_control("feedback", "feedback", controlspec.new(0, 1, 'lin', 0.01, 0.0, ''))
-  params:set_action("feedback", function(x) engine.feedback(x) end)
+  params:add_control("feedback", "feedback", controlspec.new(0, 100, 'lin', 1, 0, '%'))
+  params:set_action("feedback", function(x) engine.feedback(x / 100) end)
   
-  params:add_control("sep", "mod/sep", controlspec.new(0, 100, 'lin', 0.01, 0, '%'))
+  params:add_control("sep", "mod/sep", controlspec.new(0, 100, 'lin', 1, 0, '%'))
   params:set_action("sep", function(x) engine.sep(x / 100 / 100) end)
   
   params:add_control("mix", "mix", controlspec.new(0, 100, 'lin', 1, 0, '%'))
@@ -41,8 +41,8 @@ end
 
 function setup_defaults()
   params:set("time", 0.2)
-  params:set("feedback", 0.4)
-  params:set("sep", 0.0)
+  params:set("feedback", 40)
+  params:set("sep", 10)
   params:set("mix", 40)
 end
 
