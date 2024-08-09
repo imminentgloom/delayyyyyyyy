@@ -10,18 +10,22 @@ Engine_Delayyyyyyyy : CroneEngine {
 
   alloc {
     synth = {
-      arg out, time = 0.4, feedback = 0.4, sep = 0, mix = 0;
+      arg out, time = 0.4, feedback = 0.4, sep = 0, mix = 0, delaysend = 1, highpass = 400, lowpass = 5000;
 
       var t = Lag.kr(time, 0.2);
       var f = Lag.kr(feedback, 0.2);
       var s = Lag.kr(sep, 0.2);
+      var d = Lag.kr(delaysend, 0.2);
+      var h = Lag.kr(highpass, 0.2);
+      var l = Lag.kr(lowpass, 0,2);
+
 
       var input = SoundIn.ar([0, 0]);
       var fb = LocalIn.ar(2);
-      var output = LeakDC.ar(fb * f + input);
+      var output = LeakDC.ar((fb * f) + (input * d));
 
-      output = HPF.ar(output, 400);
-      output = LPF.ar(output, 5000);
+      output = HPF.ar(output, h);
+      output = LPF.ar(output, l);
       output = output.tanh;
 
       output = DelayC.ar(output, 2.5, LFNoise2.ar(12).range([t, t + s], [t + s, t])).reverse;
@@ -44,6 +48,18 @@ Engine_Delayyyyyyyy : CroneEngine {
 
     this.addCommand("mix", "f", { arg msg;
       synth.set(\mix, msg[1]);
+    });
+    
+    this.addCommand("delaysend", "f", { arg msg;
+      synth.set(\delaysend, msg[1]);
+    });
+    
+    this.addCommand("highpass", "f", { arg msg;
+      synth.set(\highpass, msg[1]);
+    });
+    
+    this.addCommand("lowpass", "f", { arg msg;
+      synth.set(\lowpass, msg[1]);
     });
   }
 
