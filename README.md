@@ -1,3 +1,3 @@
 # delayyyyyyyy
 
-Warm delay with modulation and stereo separation for Monome Norns.
+Warm delay with send level, modulation and stereo separation for Monome Norns.
