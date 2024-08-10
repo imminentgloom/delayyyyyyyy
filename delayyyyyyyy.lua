@@ -116,7 +116,7 @@ function key(n, z)
     is_k2_held = z == 1
     if z == 1 then
       current_feedback = params:get("feedback")
-      params:set("feedback", current_feedback * feedback_reduction))
+      params:set("feedback", current_feedback * feedback_reduction)
     else
       params:set("feedback", current_feedback)
     end
