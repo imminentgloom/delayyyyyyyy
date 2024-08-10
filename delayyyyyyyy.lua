@@ -112,6 +112,7 @@ function key(n, z)
       params:set("feedback", current_feedback * 0.9)
     else
       params:set("feedback", current_feedback)
+    end
   end
   if n == 3 then
     if z == 1 then
