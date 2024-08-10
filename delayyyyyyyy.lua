@@ -44,6 +44,9 @@ function setup_params()
   params:add_control("feedback", "feedback", controlspec.new(0, 100, 'lin', 1, 0, '%'))
   params:set_action("feedback", function(x) engine.feedback(x / 100) end)
   
+  params:add_number("feedback_reducer", "feedback_reducer", 100, 0, 90)
+  params:set_action("feedback_reducer", function(x) x / 100 end)
+  
   params:add_control("sep", "mod/sep", controlspec.new(0, 100, 'lin', 1, 0, '%'))
   params:set_action("sep", function(x) engine.sep(x / 100 / 100) end)
   
@@ -63,6 +66,7 @@ end
 function setup_defaults()
   params:set("time", 0.2)
   params:set("feedback", 75)
+  params:set("tmp_feedback", 0.9)
   params:set("sep", 10)
   params:set("mix", 40)
   params:set("send", 20)
@@ -88,6 +92,8 @@ function enc(n, d)
   elseif n == 2 then
     if is_alt_held then
       params:delta("lp", d)
+    elseif is_k2_held then
+      params:delta("feedback_reducer", d)
     else
       params:delta("feedback", d)
     end
@@ -107,14 +113,16 @@ function key(n, z)
     is_alt_held = z == 1
   end
   if n == 2 then
+    is_k2_held = z == 1
     if z == 1 then
       current_feedback = params:get("feedback")
-      params:set("feedback", current_feedback * 0.9)
+      params:set("feedback", current_feedback * params:get("feedback_reducer"))
     else
       params:set("feedback", current_feedback)
     end
   end
   if n == 3 then
+    is_k3_held = z == 1
     if z == 1 then
       current_send = params:get("send")
       params:set("send", 100)
