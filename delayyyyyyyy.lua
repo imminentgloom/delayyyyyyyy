@@ -106,7 +106,14 @@ function key(n, z)
   if n == 1 then
     is_alt_held = z == 1
   end
-  if n == 3 then  -- 
+  if n == 2 then
+    if z == 1 then
+      current_feedback = params:get("feedback")
+      params:set("feedback", current_feedback * 0.9)
+    else
+      params:set("feedback", current_feedback)
+  end
+  if n == 3 then
     if z == 1 then
       current_send = params:get("send")
       params:set("send", 100)
