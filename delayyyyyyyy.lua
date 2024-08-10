@@ -45,7 +45,7 @@ function setup_params()
   params:set_action("feedback", function(x) engine.feedback(x / 100) end)
   
   params:add_number("feedback_reducer", "feedback_reducer", 100, 0, 90)
-  params:set_action("feedback_reducer", function(x) x / 100 end)
+  params:set_action("feedback_reducer", function(x) feedback_reduction = x / 100 end)
   
   params:add_control("sep", "mod/sep", controlspec.new(0, 100, 'lin', 1, 0, '%'))
   params:set_action("sep", function(x) engine.sep(x / 100 / 100) end)
@@ -116,7 +116,7 @@ function key(n, z)
     is_k2_held = z == 1
     if z == 1 then
       current_feedback = params:get("feedback")
-      params:set("feedback", current_feedback * params:get("feedback_reducer"))
+      params:set("feedback", current_feedback * feedback_reduction))
     else
       params:set("feedback", current_feedback)
     end
